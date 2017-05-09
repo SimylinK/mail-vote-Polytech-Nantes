@@ -1,5 +1,9 @@
 package Test;
+import org.junit.Before;
+import org.junit.Test;
+
 import Commands.Commands;
+import Exceptions.RunNotFoundException;
 
 public class TestCommands {
 	//Questions pour Marcus :
@@ -9,8 +13,13 @@ public class TestCommands {
 	//Quand un e-mail contient une erreur (exemple suppression d'un client non existant), faut-il bien exécuter les commandes sans erreurs précédents et suivant cette erreur ?
 	//Ou au contraire ne rien faire de l'e-mail ?
 
-	public static void main(String[] args) {
-		Commands command= new Commands();
+	private Commands command;
+	
+	@Before
+	public void createCommand() {
+		System.out.println("Avant test");
+		
+		command= new Commands();
 		
 		//The initiator create and configure a run
 		try {
@@ -32,5 +41,12 @@ public class TestCommands {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	@Test(expected=RunNotFoundException.class)
+	public void runNotFound() throws RunNotFoundException {
+		command.run(100);
+	}
+	
 
 }
