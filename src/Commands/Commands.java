@@ -54,9 +54,11 @@ public class Commands {
 	 * Shall always precede any other command except 'createRun' and 'help'.
 	 * @param id the identifier of the run
 	 * @throws RunNotFoundException
+	 * @throws UserNotFoundException 
 	 */
-	public void run(int id) throws RunNotFoundException {
+	public void run(int id) throws RunNotFoundException, UserNotFoundException {
 		currentRun = getRun(id);
+		isInitiator = currentRun.isInitiator(emailCurrentUser);
 	}
 	
 	//TODO :
@@ -68,13 +70,14 @@ public class Commands {
 		//send help message to client.getEmail()	
 	}
 	
-	//TODO :
-	public String status(int idRun) throws RunNotFoundException{
-		Run run = getRun(idRun);
+	//TODO : check if UserNotFoundException can happen
+	public String status() throws RunNotFoundException, UserNotFoundException{
 		if(this.isInitiator){
-			return run.initiatorStatus(this.emailCurrentUser);
+			System.out.println("est initiateur");
+			return currentRun.initiatorStatus(this.emailCurrentUser);
 		} else {
-			return run.clientStatus(this.emailCurrentUser);
+			System.out.println("est client");
+			return currentRun.clientStatus(this.emailCurrentUser);
 		}
 	}
 	
@@ -112,7 +115,6 @@ public class Commands {
 		if(!this.isInitiator) throw new CommandNotAvailableException();
 		
 		currentRun.tokenCount(numberTokens);
-		
 	}
 	
 	/**

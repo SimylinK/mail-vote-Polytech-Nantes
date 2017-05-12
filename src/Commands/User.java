@@ -39,5 +39,12 @@ public abstract class User {
 		return email;
 	}
 
+	@Override
+	public String toString() {
+		String s = "id : " + id + "\n";
+		s += "email : " + email + "\n";
+		return s;
+	}
+	
 	
 }

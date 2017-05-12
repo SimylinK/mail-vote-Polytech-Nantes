@@ -56,19 +56,44 @@ public class Run {
 	public int getId(){
 		return this.id;
 	}
-	
-	//TODO : never used
-	private User getUser(String email) throws UserNotFoundException{
-		for (Initiator initiator : initiators) {
-			if(initiator.getEmail() == email) return initiator;
-		}
+		
+	/**
+	 * Access a Client by is email
+	 * @param email the e-mail address of the client
+	 * @return the client
+	 * @throws UserNotFoundException
+	 */
+	private Client getClient(String email) throws UserNotFoundException{
 		for (Client client : clients) {
 			if(client.getEmail() == email) return client;
 		}
 		throw new UserNotFoundException();
 	}
 	
+	//TODO : doc
+	private Initiator getInitiator(String email) throws UserNotFoundException{
+		for (Initiator initiator : initiators) {
+			if(initiator.getEmail() == email) return initiator;
+		}
+		throw new UserNotFoundException();
+	}
 	
+	/**
+	 * Check if the user is an initiator of this run
+	 * @param email the e-mail address of the user
+	 * @return true if the user is an initiator, false if not
+	 * @throws UserNotFoundException 
+	 */
+	public boolean isInitiator(String email) throws UserNotFoundException {
+		try {
+			getClient(email);
+			return false;
+		}catch (UserNotFoundException e) {
+			getInitiator(email);
+			return true;
+		}
+	}
+
 	
 	/*public void addInitiator(Initiator initiator) {
 		this.initiators.add(initiator);
@@ -86,17 +111,39 @@ public class Run {
 	
 	public String initiatorStatus(String email) {
 		// TODO Auto-generated method stub
-		return null;
+		return configuration();
 	}
 	
-	public String clientStatus(String email) {
-		// TODO Auto-generated method stub
-		return null;
+	public String clientStatus(String email) throws UserNotFoundException {
+		//Client tokenRepartition, or follower tokenRepartition
+		Client client = getClient(email);
+
+		String s = this.configuration() ;
+		s += client.followerToString();
+		
+		return s;
 	}
 	
-	//TODO : will be use in status ?
+	/**
+	 * Return the configuration of the run in a String
+	 * @return a String with the configuration of this run
+	 */
 	private String configuration(){
-		return description;
+		//General configuration of the run
+		String s = "Description de la run : " + "\n";
+		s += "id : " + id + "\n";
+		s += "Nombre de jetons par utilisateur : " + maxToken + "\n";
+		
+		//Configuration of the choices
+		if (choices.isEmpty()) {
+			s += "Aucun choix n'est disponible" + "\n";
+		} else {
+			s += "Liste des choix : " + "\n";
+			for (Choice choice : choices) {
+				s += choice.toString();
+			}
+		}
+		return s;
 	}
 	
 	//Initiator commands

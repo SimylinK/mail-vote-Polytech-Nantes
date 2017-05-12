@@ -36,5 +36,15 @@ public class Client extends User {
 	public boolean isInitiator() {
 		return false;
 	}
-
+	
+	public String followerToString() {
+		String s = "";
+		if (this.follower == null) {
+			s += "Le client ne suit pas un autre client :" + "\n";
+		} else {
+			s += "Le client suit un autre client :" + "\n";
+			s += this.follower.toString();
+		}
+		return s;
+	}
 }

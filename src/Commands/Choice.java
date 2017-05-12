@@ -32,5 +32,14 @@ public class Choice {
 	public void setText(String text) {
 		this.text = text;
 	}
+
+	@Override
+	public String toString() {
+		String s = "Choix " + id + "\n";
+		s += text + "\n";
+		return s;
+	}
+	
+	
 		
 }
