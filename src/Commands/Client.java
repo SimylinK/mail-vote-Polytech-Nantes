@@ -20,6 +20,14 @@ public class Client extends User {
 		this.follower = null;
 	}
 	
+	/**
+	 * Setter of follower
+	 * @param follower the new follower
+	 */
+	public void setFollower(Client follower) {
+		this.follower = follower;
+	}
+
 	@Override
 	public void hasVoted() {
 		// TODO Auto-generated method stub

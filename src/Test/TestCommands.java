@@ -22,7 +22,7 @@ public class TestCommands {
 		
 		//The initiator create and configure a run
 		try {
-			command.initUser("john.doe@etu.univ-nantes.fr");
+			command.initMail("john.doe@etu.univ-nantes.fr");
 			
 			command.createRun("useless ?");
 
@@ -45,7 +45,7 @@ public class TestCommands {
 	
 	@Test
 	public void statusClient() throws RunNotFoundException, UserNotFoundException {
-		command.initUser("mailClient1");
+		command.initMail("mailClient1");
 		command.run(0);
 		System.out.println("---------------------------------");
 		System.out.println("Statut client :");
@@ -54,7 +54,7 @@ public class TestCommands {
 	
 	@Test
 	public void statusInitiator() throws RunNotFoundException, UserNotFoundException {
-		command.initUser("john.doe@etu.univ-nantes.fr");
+		command.initMail("john.doe@etu.univ-nantes.fr");
 		command.run(0);
 		System.out.println("---------------------------------");
 		System.out.println("Statut initiator :");

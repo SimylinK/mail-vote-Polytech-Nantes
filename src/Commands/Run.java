@@ -56,9 +56,23 @@ public class Run {
 	public int getId(){
 		return this.id;
 	}
-		
+	
 	/**
-	 * Access a Client by is email
+	 * Access a Client by the identifier
+	 * @param id the the identifier of the client
+	 * @return the client
+	 * @throws UserNotFoundException
+	 */
+	private Client getClient(int id) throws UserNotFoundException{
+		for (Client client : clients) {
+			if(client.getId() == id) return client;
+		}
+		throw new UserNotFoundException();
+	}	
+	
+
+	/**
+	 * Access a Client by the email
 	 * @param email the e-mail address of the client
 	 * @return the client
 	 * @throws UserNotFoundException
@@ -92,6 +106,18 @@ public class Run {
 			getInitiator(email);
 			return true;
 		}
+	}
+	
+	/**
+	 * Check if a choice exist in this run
+	 * @param idChoice the identifier of the choice
+	 * @return true if the choice exist, false if not
+	 */
+	public boolean choiceExist(int idChoice) {
+		for (Choice choice : choices) {
+			if (choice.getId() == idChoice) return true;
+		}
+		return false;
 	}
 
 	
@@ -144,6 +170,20 @@ public class Run {
 			}
 		}
 		return s;
+	}
+	
+	//Client commands
+	
+	/**
+	 * Set the follower of a client
+	 * @param idClient the id of the client to follow
+	 * @param email the e-mail address of the user who wants to follow someone
+	 * @throws UserNotFoundException
+	 */
+	public void follow(int idClient, String email) throws UserNotFoundException {
+		Client client = getClient(email);
+		Client clientToFollow = getClient(idClient);
+		client.setFollower(clientToFollow);
 	}
 	
 	//Initiator commands

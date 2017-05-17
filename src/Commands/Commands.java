@@ -1,6 +1,8 @@
 package Commands;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import Exceptions.ChoiceNotFoundException;
 import Exceptions.CommandNotAvailableException;
@@ -15,7 +17,12 @@ public class Commands {
 	private List<Run> runs;
 	private String emailCurrentUser;
 	private boolean isInitiator;
+	//TODO : isClient
 	private Run currentRun;
+	
+	// voteNumberTokens is used in order to check if the user have used all his tokens in the mail
+	// the first key is the id of the run, the second key is the id of the choice, and the value is the number of tokens used
+	private Map<Integer, Map<Integer, Integer>> voteNumberTokens; 
 	
 	public Commands() {
 		super();
@@ -23,14 +30,24 @@ public class Commands {
 		this.emailCurrentUser = "";
 		this.isInitiator = false;
 		this.currentRun = null;
+		this.voteNumberTokens = new HashMap<Integer,Map<Integer,Integer>>();
 	}
 	
 	/**
 	 * Method to call at the opening of an email
 	 * @param email the email address of the user who sent the email
 	 */
-	public void initUser(String email) {
+	public void initMail(String email) {
 		this.emailCurrentUser = email;
+	}
+	
+	/**
+	 * Method to call at the end of an email
+	 */
+	public void endMail() {
+		//TODO : check voteNumberTokens 
+		
+		
 	}
 
 	/**
@@ -45,6 +62,23 @@ public class Commands {
 		}
 		
 		throw new RunNotFoundException();
+	}
+	
+	//Utils
+	/**
+	 * add a number in the Map this.voteNumberTokens
+	 * @param idChoice the second identifier of the Map (the first is the identifier of the current run)
+	 * @param numberOfTokens the number to add with the older value
+	 */
+	private void addVoteNumberTokens(int idChoice, int numberOfTokens) {
+		Map<Integer, Integer> choicesMap = voteNumberTokens.get(currentRun.getId());
+		if (choicesMap == null) {
+			choicesMap = new HashMap<Integer,Integer>();
+			voteNumberTokens.put(currentRun.getId(), choicesMap);
+		}
+		Integer oldNumberOfTokens = choicesMap.get(idChoice);
+		if (oldNumberOfTokens == null) oldNumberOfTokens = 0;
+		choicesMap.put(idChoice, oldNumberOfTokens + numberOfTokens);
 	}
 	
 	//General commands
@@ -81,6 +115,37 @@ public class Commands {
 		}
 	}
 	
+	//Client commands
+	
+	/**
+	 * The client votes for a particular CHOICE by placing a number of tokens on that choice’s identifier.
+	 * @param idChoice the identifier of the choice
+	 * @param numberOfTokens the number of tokens the client place on the choice
+	 * @throws ChoiceNotFoundException
+	 * @throws CommandNotAvailableException 
+	 */
+	public void vote(int idChoice, int numberOfTokens) throws ChoiceNotFoundException, CommandNotAvailableException {
+		if(!this.isInitiator){
+			if (currentRun.choiceExist(idChoice)) {
+				addVoteNumberTokens(idChoice, numberOfTokens);
+			} else {
+				throw new ChoiceNotFoundException();
+			}
+		} else {
+			throw new CommandNotAvailableException();
+		}
+	}
+	
+	/**
+	 * The client delegates the voting to another client that is specified in the identifier. 
+	 * @param idClient the identifier of the client
+	 * @throws UserNotFoundException 
+	 */
+	public void follow(int idClient) throws UserNotFoundException {
+		if(!this.isInitiator){
+			currentRun.follow(idClient, emailCurrentUser);
+		}
+	}
 	
 	//Initiator commands
 	
