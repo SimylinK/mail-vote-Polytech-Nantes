@@ -221,7 +221,7 @@ public class Parser {
 			} else if (comm.equals("RUN")){
 				this.commands.run(comm.attributeToInt());
 			} else if (comm.equals("USER")){
-				this.commands.initUser("blop@hotmail.fr");
+				this.commands.initMail("blop@hotmail.fr");
 			} else if (comm.equals("STATUS")){
 				//this.commands.status()
 			} else if (comm.equals("VOTE")){
